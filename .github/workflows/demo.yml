@@ -18,23 +18,7 @@ jobs:
 
       # After the build finishes, trigger the pull request creation workflow
       - name: Trigger Pull Request Creation
-        uses: actions/github-script@v5
+        uses: repo-dispatch
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: workflows } = await github.actions.listRepoWorkflows({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-
-            const prWorkflow = workflows.find(workflow => workflow.name === 'Create PR Workflow');
-
-            if (prWorkflow) {
-              await github.actions.reRunWorkflow({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: prWorkflow.id
-              });
-            } else {
-              console.log("Pull request workflow not found.");
-            }
+          workflow: Create PR Workflow
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
