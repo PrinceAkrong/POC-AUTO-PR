@@ -2,7 +2,7 @@ name: Demo to create automatic PR
 on:
   push:
     branches:
-      - auto-pr-branch  # Replace 'main' with your branch name
+      - main  # Replace 'main' with your branch name
 
 jobs:
   createPullRequest:
