@@ -16,7 +16,7 @@ jobs:
           java-version: 11
 
       - name: grant permission
-        run: chmod +x $GITHUB_WORKSPACE/.github/workflows/dradlew
-
+        run: chmod +x dradlew
+  
       - name: build action
-        run: $GITHUB_WORKSPACE/.github/workflows/dradlew build
+        run: ./gradlew build
