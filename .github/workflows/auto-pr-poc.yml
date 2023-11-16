@@ -1,34 +1,24 @@
 #name: Demo to create automatic PR
 on:
   push:
-    branches: [ "pauto-pr-branch" ]
+    branches:
+      - auto-pr-branch  # Replace 'main' with your branch name
 
 jobs:
-  updateAuthor:
+  createPullRequest:
     runs-on: ubuntu-latest
     steps:
-      - name: checking out code   
-        uses: actions/checkout@v3
-        
-        
-        
-      - name: extract git commit data
-        uses: POC-AUTO-PR/git-commit-data-action@v1.x
-        
-      - name: Update author information
-        run:  echo ${{ env.GIT_COMMIT_AUTHOR_NAME }}  > AUTHOR
-      
-      - name: Raise PR
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create PR
         uses: peter-evans/create-pull-request@v3
         with:
-            branch: "auto-pr-branch"
-            base: main
-            title: "demo for auto pr"
-            committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GITHUB_COMMIT_AUTHOR_EMAIL }}">
-            author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GITHUB_COMMIT_AUTHOR_EMAIL }}">
-            body:
-              This is to show auto PR creation
-            token: ${{ secrets.GITHUB_TOKEN}}
-                    
-            delete-branch: false
+          branch: "new-feature-branch"  # Replace with your new branch name
+          base: main  # Replace 'main' with your base branch name
+          title: "Automated Pull Request"
+          body: |
+            This is an automated pull request.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
           
