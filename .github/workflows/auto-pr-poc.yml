@@ -14,7 +14,7 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: "new-feature-branch"  # Replace with your new branch name
+          branch: "auto-pr-branch"  # Replace with your new branch name
           base: main  # Replace 'main' with your base branch name
           title: "Automated Pull Request"
           body: |
