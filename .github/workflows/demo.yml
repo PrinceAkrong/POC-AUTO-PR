@@ -1,7 +1,7 @@
 name: Demo to create automatic PR
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "auto-pr-branch" ]
 
 jobs:
   build:
