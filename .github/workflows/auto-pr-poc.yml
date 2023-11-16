@@ -1,8 +1,9 @@
-name: Demo to create automatic 
+name: Create PR Workflow
 on:
-  push:
-    branches:
-      - main  # Replace 'main' with your branch name
+  workflow_run:
+    workflows: ["Build Workflow"]
+    types:
+      - completed
 
 jobs:
   createPullRequest:
@@ -14,8 +15,8 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: "auto-pr-branch"  # Replace with your new branch name
-          base: main  # Replace 'main' with your base branch name
+          branch: "auto-pr-branch"
+          base: main
           title: "Automated Pull Request"
           body: |
             This is an automated pull request.

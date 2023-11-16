@@ -1,7 +1,8 @@
-name: Demo to create automatic PR
+name: Build Workflow
 on:
   push:
-    branches: [ "auto-pr-branch" ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -14,3 +15,26 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      # After the build finishes, trigger the pull request creation workflow
+      - name: Trigger Pull Request Creation
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: workflows } = await github.actions.listRepoWorkflows({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const prWorkflow = workflows.find(workflow => workflow.name === 'Create PR Workflow');
+
+            if (prWorkflow) {
+              await github.actions.reRunWorkflow({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: prWorkflow.id
+              });
+            } else {
+              console.log("Pull request workflow not found.");
+            }
