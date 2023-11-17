@@ -1,4 +1,4 @@
-name: Build Workflow 
+name: Build Workflow and create auto PR
 on:
   push:
     branches:
