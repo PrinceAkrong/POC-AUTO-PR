@@ -18,8 +18,9 @@ jobs:
 
       - name: Create Pull Request
         if: success() && github.ref == 'refs/heads/auto-pr-branch'
+        env:
+          ACCESS_TOKEN: My Token # Replace MY_ACCESS_TOKEN with your secret name
         run: |
-          ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}" # Replace with your personal access token
           REPO_URL="https://api.github.com/repos/username/repository-name/pulls"
           
           # Create a JSON payload for the pull request
