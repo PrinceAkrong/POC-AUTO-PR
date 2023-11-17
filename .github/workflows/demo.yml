@@ -16,4 +16,36 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-        
+
+      # Your other build steps go here...
+
+      - name: Trigger Auto PR Workflow
+        if: success() && github.ref == 'refs/heads/auto-pr-branch'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { data: workflowRuns } = await github.actions.listWorkflowRuns({
+              owner: 'OWNER',
+              repo: 'REPO',
+              workflow_id: '6900826624',
+              branch: 'auto-pr-branch',
+              status: 'success'
+            });
+
+            if (workflowRuns.total_count === 0) {
+              const { data: createdRun } = await github.actions.createWorkflowDispatch({
+                owner: 'OWNER',
+                repo: 'REPO',
+                workflow_id: 'YOUR_SECOND_WORKFLOW_ID',
+                ref: 'auto-pr-branch'
+              });
+              console.log('Auto PR Workflow triggered:', createdRun);
+            } else {
+              console.log('Auto PR Workflow already ran successfully.');
+            }
+
+            // Handle errors if needed
+
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
