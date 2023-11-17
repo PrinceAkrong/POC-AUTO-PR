@@ -1,21 +1,35 @@
-name: Create PR Workflow
+name: PR Merge on Schedule
+
 on:
-  repository_dispatch:
-    types: [trigger-pr-creation]
+  schedule:
+    - cron: '* 1 * * *'
 
 jobs:
-  createPullRequest:
+  prhelper_schedule:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v3
-        with:
-          branch: "auto-pr-branch"
-          base: main
-          title: "Automated Pull Request"
-          body: |
-            This is an automated pull request.
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run PR Helper on Schedule
+      id: runprhelperonschedule
+      uses: Matticusau/pr-helper@v1.2.4
+      with:
+        repo-token: ${{ secrets.GHACTION_PAT }}
+        enable-prmerge-automation: true
+        enable-prcomment-automation: false
+        enable-prlabel-automation: true
+        enable-prreviewer-frontmatter: true
+        enable-welcomemessage: false
+        prmerge-requireallchecks: true
+        prmerge-requirereviewcount: 1
+        prmerge-method: 'merge'
+        prmerge-deletebranch: 'true'
+        prmerge-deletebranch-config: ''
+        prmerge-pathcheck: true
+        prmerge-allowpaths: '{"any":["articles/**"]}'
+        prreviewer-authorkey: 'author'
+        prreviewer-githubuserfromauthorfile: true
+        prreviewer-authorfilepath: '_data/demo.yaml'
+        prlabel-default: 'pr-onhold'
+        prlabel-ready: 'pr-ready'
+        prlabel-onhold: 'pr-onhold'
+        prlabel-reviewrequired: 'review-required'
+        prlabel-automerge: 'auto-merge'
