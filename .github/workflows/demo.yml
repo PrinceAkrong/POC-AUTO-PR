@@ -16,15 +16,13 @@ jobs:
         with:
           java-version: 11
 
-      # After the build finishes, trigger the pull request creation workflow
       - name: Trigger PR Workflow Dispatch
-        if: success() && github.ref == 'refs/heads/auto-pr-branch' # Execute only if the previous steps were successful and on the correct branch
+        if: success() && github.ref == 'refs/heads/auto-pr-branch'
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/auto-pr-branch" ]; then
           TOKEN="${{ secrets.GITHUB_TOKEN }}"
           REPO="${{ github.repository }}"
-          PR_TITLE="Automatic PR from auto-pr-brach to main"
-          PR_BODY="This is an automatic pull request from feature-WLD-462 to dev."
+          PR_TITLE="Automatic PR from auto-pr-branch to main"
+          PR_BODY="This is an automatic pull request from auto-pr-branch to main."
           PR_HEAD="auto-pr-branch"
           PR_BASE="main"
 
@@ -38,10 +36,8 @@ jobs:
           # Check if the pull request was successfully created
           if [[ $PR_RESPONSE == *"html_url"* ]]; then
             echo "Pull request created successfully."
+            echo "PR URL: $(echo $PR_RESPONSE | jq -r '.html_url')"
           else
             echo "Failed to create pull request."
             echo "Response: $PR_RESPONSE"
-          fi
-          else
-          echo "Not in auto-pr-branch branch. Skipping PR creation."
           fi
