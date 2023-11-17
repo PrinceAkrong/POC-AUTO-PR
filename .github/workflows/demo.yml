@@ -20,7 +20,7 @@ jobs:
       - name: Create Pull Request
         if: success() && github.ref == 'refs/heads/auto-pr-branch'
         env:
-          ACCESS_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
         run: |
           REPO_URL="https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/pulls"
           
