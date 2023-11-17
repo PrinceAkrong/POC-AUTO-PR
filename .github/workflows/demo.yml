@@ -21,7 +21,7 @@ jobs:
         env:
             ACCESS_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
         run: |
-            REPO_URL="https://api.github.com/repos/username/repository-name/pulls"
+            REPO_URL="https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/pulls"
             
             # Create a JSON payload for the pull request
             TITLE="Automatic PR from auto-pr-branch to main"
