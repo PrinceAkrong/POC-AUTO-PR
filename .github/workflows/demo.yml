@@ -17,8 +17,31 @@ jobs:
           java-version: 11
 
       # After the build finishes, trigger the pull request creation workflow
-      - name: Trigger Pull Request Creation
-        uses: repo-dispatch
-        with:
-          workflow: Create PR Workflow
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Trigger PR Workflow Dispatch
+        if: success() && github.ref == 'refs/heads/feature-WLD-462' # Execute only if the previous steps were successful and on the correct branch
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/feature-WLD-462" ]; then
+          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          REPO="${{ github.repository }}"
+          PR_TITLE="Automatic PR from feature-WLD-462 to dev"
+          PR_BODY="This is an automatic pull request from feature-WLD-462 to dev."
+          PR_HEAD="feature-WLD-462"
+          PR_BASE="dev"
+
+          # Create a pull request using the GitHub API
+          PR_RESPONSE=$(curl -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$PR_HEAD\",\"base\":\"$PR_BASE\"}" \
+            "https://api.github.com/repos/$REPO/pulls")
+
+          # Check if the pull request was successfully created
+          if [[ $PR_RESPONSE == *"html_url"* ]]; then
+            echo "Pull request created successfully."
+          else
+            echo "Failed to create pull request."
+            echo "Response: $PR_RESPONSE"
+          fi
+          else
+          echo "Not in feature-WLD-462 branch. Skipping PR creation."
+          fi
