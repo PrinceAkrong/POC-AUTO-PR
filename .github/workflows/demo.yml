@@ -1,4 +1,4 @@
-name: Build Workflow and create auto PR
+name: Build Workflow and Trigger create-pull-request
 
 on:
   push:
@@ -17,35 +17,15 @@ jobs:
         with:
           java-version: 11
 
-      # Your other build steps go here...
+      - name: Build completed
+        id: build_completed
+        run: echo "Build completed successfully"
 
-      - name: Trigger Auto PR Workflow
-        if: success() && github.ref == 'refs/heads/auto-pr-branch'
-        uses: actions/github-script@v5
-        with:
-          script: |
-            const { data: workflowRuns } = await github.actions.listWorkflowRuns({
-              owner: 'OWNER',
-              repo: 'REPO',
-              workflow_id: '6900826624',
-              branch: 'auto-pr-branch',
-              status: 'success'
-            });
-
-            if (workflowRuns.total_count === 0) {
-              const { data: createdRun } = await github.actions.createWorkflowDispatch({
-                owner: 'OWNER',
-                repo: 'REPO',
-                workflow_id: 'YOUR_SECOND_WORKFLOW_ID',
-                ref: 'auto-pr-branch'
-              });
-              console.log('Auto PR Workflow triggered:', createdRun);
-            } else {
-              console.log('Auto PR Workflow already ran successfully.');
-            }
-
-            // Handle errors if needed
-
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Trigger create-pull-request workflow
+        if: success()
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/actions/workflows/<create-pr-workflow-id>/dispatches \
+            -d '{"ref":"main"}'
