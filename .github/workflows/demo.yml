@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Using the default GitHub token available in actions
+
     steps:
       - name: checking out code   
         uses: actions/checkout@v2
@@ -19,8 +22,6 @@ jobs:
 
       - name: Create Pull Request
         if: success() && github.ref == 'refs/heads/auto-pr-branch'
-        env:
-          ACCESS_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
         run: |
           gh api \
             --method POST \
@@ -30,4 +31,4 @@ jobs:
             -f title='Amazing new feature' \
             -f body='Please pull these awesome changes in!' \
             -f head='octocat:new-feature' \
-            -f base='main'
+            -f base='master'
