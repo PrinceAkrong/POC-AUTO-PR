@@ -12,7 +12,7 @@ jobs:
       id: runprhelperonschedule
       uses: Matticusau/pr-helper@v1.2.4
       with:
-        repo-token: ${{ secrets.GHACTION_PAT }}
+        repo-token: ${{ secrets.MY_ACCESS_TOKEN }}
         enable-prmerge-automation: true
         enable-prcomment-automation: false
         enable-prlabel-automation: true
