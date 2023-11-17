@@ -1,33 +1,37 @@
-name: Manual PR Creation
-
+name: Build Workflow
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch name for pull request'
-        required: true
-        default: 'auto-pr-branch'
+  push:
+    branches:
+      - auto-pr-branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: checking out code   
         uses: actions/checkout@v2
-
-      - name: Set up Java environment
+        
+      - name: set up java env
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      # Perform build or necessary operations here
-
       - name: Create Pull Request
-        if: success()
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.event.inputs.branch }}
-          base: main
-          title: Automatic PR from ${{ github.event.inputs.branch }} to main
-          body: This is an automatic pull request from ${{ github.event.inputs.branch }} to main.
+        if: success() && github.ref == 'refs/heads/auto-pr-branch'
+        run: |
+          ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}" # Replace with your personal access token
+          REPO_URL="https://api.github.com/repos/username/repository-name/pulls"
+          
+          # Create a JSON payload for the pull request
+          DATA=$(jq -n --arg title "Automatic PR from auto-pr-branch to main" --arg head "auto-pr-branch" --arg base "main" '{title: $title, head: $head, base: $base}')
+          
+          # Make a POST request to create the pull request
+          RESPONSE=$(curl -X POST -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$DATA" $REPO_URL)
+          
+          # Check the response for errors
+          if [[ $(echo "$RESPONSE" | jq -r '.html_url') != "null" ]]; then
+            echo "Pull request created successfully: $(echo "$RESPONSE" | jq -r '.html_url')"
+          else
+            echo "Failed to create pull request. Response: $RESPONSE"
+            exit 1
+          fi
