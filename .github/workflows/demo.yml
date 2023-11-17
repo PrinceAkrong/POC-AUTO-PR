@@ -1,4 +1,5 @@
 name: Build Workflow and create auto PR
+
 on:
   push:
     branches:
@@ -19,26 +20,25 @@ jobs:
       - name: Create Pull Request
         if: success() && github.ref == 'refs/heads/auto-pr-branch'
         env:
-            ACCESS_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
+          ACCESS_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }} # Replace MY_ACCESS_TOKEN with your secret name
         run: |
-            REPO_URL="https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/pulls"
-            
-            # Create a JSON payload for the pull request
-            TITLE="Automatic PR from auto-pr-branch to main"
-            HEAD="auto-pr-branch"
-            BASE="main"
-            
-            DATA="{\"title\":\"$TITLE\",\"head\":\"$HEAD\",\"base\":\"$BASE\"}"
-            
-            # Make a POST request to create the pull request
-            RESPONSE=$(curl -X POST -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$DATA" $REPO_URL)
-            
-            # Check the response for errors
-            HTML_URL=$(echo "$RESPONSE" | jq -r '.html_url')
-            if [ "$HTML_URL" != "null" ]; then
-              echo "Pull request created successfully: $HTML_URL"
-            else
-              echo "Failed to create pull request. Response: $RESPONSE"
-              exit 1
-            fi
-        
+          REPO_URL="https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/pulls"
+          
+          # Create a JSON payload for the pull request
+          TITLE="Automatic PR from auto-pr-branch to main"
+          HEAD="auto-pr-branch"
+          BASE="main"
+          
+          DATA="{\"title\":\"$TITLE\",\"head\":\"$HEAD\",\"base\":\"$BASE\"}"
+          
+          # Make a POST request to create the pull request
+          RESPONSE=$(curl -X POST -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$DATA" $REPO_URL)
+          
+          # Check the response for errors
+          HTML_URL=$(echo "$RESPONSE" | jq -r '.html_url')
+          if [ "$HTML_URL" != "null" ]; then
+            echo "Pull request created successfully: $HTML_URL"
+          else
+            echo "Failed to create pull request. Response: $RESPONSE"
+            exit 1
+          fi
