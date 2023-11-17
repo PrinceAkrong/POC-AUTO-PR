@@ -27,5 +27,5 @@ jobs:
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/actions/workflows/<create-pr-workflow-id>/dispatches \
+            https://api.github.com/repos/PrinceAkrong/POC-AUTO-PR/actions/workflows/6900879596/dispatches \
             -d '{"ref":"main"}'
