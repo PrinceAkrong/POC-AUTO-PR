@@ -18,15 +18,15 @@ jobs:
 
       # After the build finishes, trigger the pull request creation workflow
       - name: Trigger PR Workflow Dispatch
-        if: success() && github.ref == 'refs/heads/feature-WLD-462' # Execute only if the previous steps were successful and on the correct branch
+        if: success() && github.ref == 'refs/heads/auto-pr-branch' # Execute only if the previous steps were successful and on the correct branch
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/feature-WLD-462" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/auto-pr-branch" ]; then
           TOKEN="${{ secrets.GITHUB_TOKEN }}"
           REPO="${{ github.repository }}"
-          PR_TITLE="Automatic PR from feature-WLD-462 to dev"
+          PR_TITLE="Automatic PR from auto-pr-brach to main"
           PR_BODY="This is an automatic pull request from feature-WLD-462 to dev."
-          PR_HEAD="feature-WLD-462"
-          PR_BASE="dev"
+          PR_HEAD="auto-pr-branch"
+          PR_BASE="main"
 
           # Create a pull request using the GitHub API
           PR_RESPONSE=$(curl -X POST \
@@ -43,5 +43,5 @@ jobs:
             echo "Response: $PR_RESPONSE"
           fi
           else
-          echo "Not in feature-WLD-462 branch. Skipping PR creation."
+          echo "Not in auto-pr-branch branch. Skipping PR creation."
           fi
