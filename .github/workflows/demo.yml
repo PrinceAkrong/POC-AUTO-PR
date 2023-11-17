@@ -23,24 +23,11 @@ jobs:
       # Perform build or necessary operations here
 
       - name: Create Pull Request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH="${{ github.event.inputs.branch }}"
-          TITLE="Automatic PR from $BRANCH to main"
-          BODY="This is an automatic pull request from $BRANCH to main."
-
-          # Create a pull request using GitHub API
-          RESPONSE=$(curl -X POST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"$BRANCH\",\"base\":\"main\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls")
-
-          if [[ $RESPONSE == *"html_url"* ]]; then
-            echo "Pull request created successfully."
-            echo "PR URL: $(echo $RESPONSE | jq -r '.html_url')"
-          else
-            echo "Failed to create pull request."
-            echo "Response: $RESPONSE"
-          fi
+        if: success()
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.inputs.branch }}
+          base: main
+          title: Automatic PR from ${{ github.event.inputs.branch }} to main
+          body: This is an automatic pull request from ${{ github.event.inputs.branch }} to main.
