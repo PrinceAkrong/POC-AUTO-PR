@@ -21,7 +21,7 @@ jobs:
         id: build_completed
         run: echo "Build completed successfully"
 
-      - name: Trigger create-pull-request workflow
+      - name: Trigger auto-pr-poc.yml workflow
         if: success()
         run: |
           curl -X POST \
