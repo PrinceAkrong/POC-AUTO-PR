@@ -16,28 +16,12 @@ jobs:
         with:
           java-version: 11
 
-      - name: Trigger PR Workflow Dispatch
+      - name: Create Pull Request
         if: success() && github.ref == 'refs/heads/auto-pr-branch'
-        run: |
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          REPO="${{ github.repository }}"
-          PR_TITLE="Automatic PR from auto-pr-branch to main"
-          PR_BODY="This is an automatic pull request from auto-pr-branch to main."
-          PR_HEAD="auto-pr-branch"
-          PR_BASE="main"
-
-          # Create a pull request using the GitHub API
-          PR_RESPONSE=$(curl -X POST \
-            -H "Authorization: token $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$PR_HEAD\",\"base\":\"$PR_BASE\"}" \
-            "https://api.github.com/repos/$REPO/pulls")
-
-          # Check if the pull request was successfully created
-          if [[ $PR_RESPONSE == *"html_url"* ]]; then
-            echo "Pull request created successfully."
-            echo "PR URL: $(echo $PR_RESPONSE | jq -r '.html_url')"
-          else
-            echo "Failed to create pull request."
-            echo "Response: $PR_RESPONSE"
-          fi
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto-pr-branch
+          base: main
+          title: Automatic PR from auto-pr-branch to main
+          body: This is an automatic pull request from auto-pr-branch to main.
