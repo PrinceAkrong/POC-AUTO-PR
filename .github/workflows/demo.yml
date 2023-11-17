@@ -22,6 +22,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          head: auto-pr-branch
           title: Automatic PR from auto-pr-branch to main
           body: This is an automatic pull request from auto-pr-branch to main.
+          debug: true
