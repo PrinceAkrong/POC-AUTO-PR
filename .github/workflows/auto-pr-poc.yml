@@ -46,11 +46,11 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          gh pr review $pr_number --approve -R ${{ env.OWNER }}/${{ env.REPO }}
+          gh pr review $pr_number --approve
 
       - name: Auto-Merge PR
         if: success()
         run: |
-          gh pr merge $pr_number --squash -R ${{ env.OWNER }}/${{ env.REPO }}
+          gh pr merge $pr_number --squash
         continue-on-error: true
       
