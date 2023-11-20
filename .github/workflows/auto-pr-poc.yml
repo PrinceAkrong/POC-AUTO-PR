@@ -34,6 +34,7 @@ jobs:
             -f head="${{ env.PR_SOURCE }}" \
             -f base="${{ env.PR_TARGET }}"
             # Automatically approve the PR
+            
             pull_request_url=$(echo "$response" | jq -r .url)
           pr_number=$(echo "$response" | jq -r .number)
 
@@ -45,11 +46,11 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          gh pr review $pr_number --approve -R ${{ env.OWNER }}/${{ env.REPO }} --token ${{ secrets.MY_ACCESS_TOKEN }}
+          gh pr review $pr_number --approve -R ${{ env.OWNER }}/${{ env.REPO }}
 
       - name: Auto-Merge PR
         if: success()
         run: |
-          gh pr merge $pr_number --squash -R ${{ env.OWNER }}/${{ env.REPO }} --token ${{ secrets.MY_ACCESS_TOKEN }}
+          gh pr merge $pr_number --squash -R ${{ env.OWNER }}/${{ env.REPO }}
         continue-on-error: true
       
