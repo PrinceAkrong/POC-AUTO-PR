@@ -44,21 +44,13 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-            echo "{\"event\": \"APPROVE\"}" > approve_payload.json
-            gh api -X POST "${{ env.pull_request_url }}/reviews" \
-              -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Content-Type: application/json" \
-              --input approve_payload.json
-        
+          pr_number=$(gh pr list -s all | awk '/Auto PR/ {print $1}')
+          gh pr review -a auto-approve --body "Automatically approved" --number $pr_number --json body="$(echo "{\"event\": \"APPROVE\"}")"
+
       - name: Auto-Merge PR
         if: success()
         run: |
-            echo "{\"merge_method\": \"squash\"}" > merge_payload.json
-            gh api -X PUT "${{ env.pull_request_url }}/merge" \
-              -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Content-Type: application/json" \
-              --input merge_payload.json
+          pr_number=$(gh pr list -s all | awk '/Auto PR/ {print $1}')
+          gh pr merge --squash --number $pr_number
         continue-on-error: true
       
