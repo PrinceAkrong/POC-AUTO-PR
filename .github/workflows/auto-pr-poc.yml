@@ -47,23 +47,5 @@ jobs:
         if: success()
         run: |
           gh pr review $pr_number --approve
-
-      - name: Wait for PR status
-        run: |
-          # Poll the PR merge status until it's mergeable or time out after 2 minutes
-          for i in {1..12}; do
-            mergeable=$(gh pr view $pr_number --json mergeable -q '.mergeable')
-            if [ "$mergeable" == "true" ]; then
-              echo "PR is mergeable"
-              exit 0
-            fi
-            sleep 10
-          done
-          echo "PR is not mergeable or timed out"
-
-      - name: Auto-Merge PR
-        if: success()
-        run: |
-          gh pr merge $pr_number --squash --auto --merge -R ${{ env.OWNER }}/${{ env.REPO }}
         continue-on-error: true
       
