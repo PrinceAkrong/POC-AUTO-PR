@@ -7,8 +7,8 @@ on:
       - dev
 
 env:
-  OWNER: TB-EIT
-  REPO: interview-prepper
+  OWNER: PrinceAkrong
+  REPO: POC-AUTO-PR
   PR_SOURCE: dev
   PR_TARGET: main
   GH_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }}
