@@ -1,0 +1,19 @@
+name: Node.js Build
+
+on:
+  push:
+    branches:
+      - dev  # Triggers the workflow on pushes to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Specifies the operating system for the job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Action to check out the repository's code
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2  # Action to set up Node.js environment
+        with:
+          node-version: '18'  # Choose the Node.js version
