@@ -37,13 +37,35 @@ jobs:
             pull_request_url=$(echo "$response" | jq -r .url)
 
           # Automatically approve the PR
-          gh api -X POST "${pull_request_url}/reviews" \
+          pull_request_url=$(echo "$response" | jq -r .url)
+
+      - name: Automatically Request Review from Specific Reviewers
+        if: success()
+        run: |
+          gh api -X POST "${pull_request_url}/requested_reviewers" \
             -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Content-Type: application/json" \
-            -d '{"event": "APPROVE"}'
+            -d '{"reviewers": ["PrinceAkrong", "PrinceAkrong"]}'  # Add the specific reviewers' usernames here
 
-          # Auto-Merge PR (Squash merge)
+      - name: Wait for Approval
+        if: success()
+        run: |
+          sleep 10  # Wait for a few seconds before checking the status
+          PR_STATE=$(gh api "${pull_request_url}" \
+            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" | jq -r .state)
+
+          while [[ $PR_STATE != "APPROVED" ]]; do
+            sleep 10
+            PR_STATE=$(gh api "${pull_request_url}" \
+              -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" | jq -r .state)
+          done
+
+      - name: Auto-Merge PR
+        if: success()
+        run: |
           gh api -X PUT "${pull_request_url}/merge" \
             -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
