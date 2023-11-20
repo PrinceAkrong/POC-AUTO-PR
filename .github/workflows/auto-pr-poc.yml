@@ -26,13 +26,12 @@ jobs:
         run: |
           gh api "/repos/${{ env.OWNER }}/${{ env.REPO }}/pulls" \
             -X POST \
-            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN}}" \
+            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Content-Type: application/json" \
-            -d '{
-              "title": "${{ env.OWNER }}/${{ env.REPO }} Auto PR",
-              "body": "Please pull these awesome changes in!",
-              "head": "${{ env.PR_SOURCE }}",
-              "base": "${{ env.PR_TARGET }}"
-            }'
+            -f title="${{ env.OWNER }}/${{ env.REPO }} Auto PR" \
+            -f body="Please pull these awesome changes in!" \
+            -f head="${{ env.PR_SOURCE }}" \
+            -f base="${{ env.PR_TARGET }}"
         continue-on-error: true
+      
