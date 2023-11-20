@@ -35,21 +35,25 @@ jobs:
             -f base="${{ env.PR_TARGET }}"
             # Automatically approve the PR
             pull_request_url=$(echo "$response" | jq -r .url)
-            pr_number=$(echo "$response" | jq -r .number)
-  
+          pr_number=$(echo "$response" | jq -r .number)
+
       - name: Wait for Checks
         if: success()
         run: |
-            sleep 10  # Waiting for checks to complete (adjust timing if needed)
-  
+          sleep 10  # Waiting for checks to complete (adjust timing if needed)
+
       - name: Automatically Approve PR
         if: success()
         run: |
-            gh pr review $pr_number --approve --body "Automatically approved" -R ${{ env.OWNER }}/${{ env.REPO }} --token ${{ secrets.MY_ACCESS_TOKEN }}
-  
+          gh api -X POST "${pull_request_url}/reviews" \
+            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d '{"event": "APPROVE"}'
+
       - name: Auto-Merge PR
         if: success()
         run: |
-            gh pr merge $pr_number --squash -R ${{ env.OWNER }}/${{ env.REPO }} --token ${{ secrets.MY_ACCESS_TOKEN }}
+          gh pr merge $pr_number --squash -R ${{ env.OWNER }}/${{ env.REPO }}
         continue-on-error: true
       
