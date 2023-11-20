@@ -45,13 +45,7 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          echo '{"event": "APPROVE"}' > approval.json
-          gh api -X POST "${pull_request_url}/reviews" \
-            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Content-Type: application/json" \
-            --input approval.json
-          rm approval.json  # Clean up the JSON file
+          gh pr review $pr_number --approve
 
       - name: Auto-Merge PR
         if: success()
