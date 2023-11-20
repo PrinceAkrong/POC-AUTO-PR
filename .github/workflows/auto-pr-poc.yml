@@ -46,6 +46,6 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          gh pr review $pr_number --approve
+          gh pr review $pr_number --approve --token $GH_TOKEN
         continue-on-error: true
       
