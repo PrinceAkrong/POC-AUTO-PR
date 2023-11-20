@@ -11,7 +11,7 @@ env:
   REPO: interview-prepper
   PR_SOURCE: dev
   PR_TARGET: main
-  GH_TOKEN: ${{ secrets.PR_CREATE_TOKEN }}
+  GH_TOKEN: ${{ secrets.MY_ACCESS_TOKEN }}
 
 jobs:
   create-pr:
