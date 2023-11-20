@@ -1,6 +1,6 @@
 name: Create PR against main branch whenever code is pushed to develop
 
-# Triggers on code push to main branch of the repository
+# Triggers on code push to main branch of the repo
 on:
   push:
     branches:
@@ -46,6 +46,6 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          gh pr review $pr_number --approve
+          gh pr review $pr_number --approve --token $GH_TOKEN
         continue-on-error: true
       
