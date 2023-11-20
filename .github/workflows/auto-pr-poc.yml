@@ -46,7 +46,7 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          gh pr review $pr_number --approve
+          gh pr review $pr_number --approve --token $GH_TOKEN
 
       - name: Wait for PR status
         run: |
@@ -64,6 +64,6 @@ jobs:
       - name: Auto-Merge PR
         if: success()
         run: |
-          gh pr merge $pr_number --squash
+          gh pr merge $pr_number --squash --auto --merge -R ${{ env.OWNER }}/${{ env.REPO }} --token $GH_TOKEN
         continue-on-error: true
       
