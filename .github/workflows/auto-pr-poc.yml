@@ -47,10 +47,5 @@ jobs:
         if: success()
         run: |
           gh pr review $pr_number --approve
-
-      - name: Auto-Merge PR
-        if: success()
-        run: |
-          gh pr merge $pr_number --squash
         continue-on-error: true
       
