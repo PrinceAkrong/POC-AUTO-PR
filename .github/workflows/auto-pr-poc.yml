@@ -35,6 +35,7 @@ jobs:
             -f base="${{ env.PR_TARGET }}"
             # Automatically approve the PR
             pull_request_url=$(echo "$response" | jq -r .url)
+          pr_number=$(echo "$response" | jq -r .number)
 
       - name: Wait for Checks
         if: success()
@@ -44,13 +45,11 @@ jobs:
       - name: Automatically Approve PR
         if: success()
         run: |
-          pr_number=$(gh pr list -s all | awk '/Auto PR/ {print $1}')
-          gh pr review -a auto-approve --body "Automatically approved" --number $pr_number --json body="$(echo "{\"event\": \"APPROVE\"}")"
+          gh pr review $pr_number --approve --body "Automatically approved"
 
       - name: Auto-Merge PR
         if: success()
         run: |
-          pr_number=$(gh pr list -s all | awk '/Auto PR/ {print $1}')
-          gh pr merge --squash --number $pr_number
+          gh pr merge $pr_number --squash
         continue-on-error: true
       
