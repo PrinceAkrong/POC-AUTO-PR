@@ -36,22 +36,18 @@ jobs:
             # Automatically approve the PR
             pull_request_url=$(echo "$response" | jq -r .url)
 
-            - name: Automatically Approve PR
-              if: success()
-              run: |
-                gh api -X POST "${pull_request_url}/reviews" \
-                  -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
-                  -H "Accept: application/vnd.github.v3+json" \
-                  -H "Content-Type: application/json" \
-                  -d '{"event": "APPROVE"}'
-      
-            - name: Auto-Merge PR
-              if: success()
-              run: |
-                gh api -X PUT "${pull_request_url}/merge" \
-                  -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
-                  -H "Accept: application/vnd.github.v3+json" \
-                  -H "Content-Type: application/json" \
-                  -d '{"merge_method": "squash"}'
+          # Automatically approve the PR
+          gh api -X POST "${pull_request_url}/reviews" \
+            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d '{"event": "APPROVE"}'
+
+          # Auto-Merge PR (Squash merge)
+          gh api -X PUT "${pull_request_url}/merge" \
+            -H "Authorization: token ${{ secrets.MY_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d '{"merge_method": "squash"}'
         continue-on-error: true
       
