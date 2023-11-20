@@ -1,6 +1,6 @@
 name: Create PR against main branch whenever code is pushed to develop
 
-# Triggers on code push to main branch of the repository
+# Triggers on code push to main branch of the repo
 on:
   push:
     branches:
